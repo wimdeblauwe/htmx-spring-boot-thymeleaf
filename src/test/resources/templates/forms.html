@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:hx="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Forms Test</title>
+
+    <style>
+        .htmx-indicator {
+            opacity: 0;
+        }
+
+        .htmx-indicator.htmx-request {
+            opacity: 1;
+            animation: ease;
+            animation-duration: 1s;
+        }
+
+        .error {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+<h3>Signup Form</h3>
+
+<div th:fragment="alert">
+    <div id="alert" th:text="${alertText} ?: ''">Allllert!</div>
+</div>
+
+<!--/*@thymesVar id="body" type="io.github.wimdeblauwe.hsbt.mvc.FormsController.FormValues"*/-->
+<form hx-post="/forms/newAccount" th:fragment="formBody" th:object="${body}">
+    <div hx-target="this" hx-swap="outerHTML" th:fragment="emailField" th:object="${body}">
+        <label>Email Address</label>
+        <input name="email" hx-post="/forms/newAccount" hx-indicator="#ind" th:field="*{email}">
+        <div id="ind" class="htmx-indicator">Loading...</div>
+        <p  th:if="${#fields.hasErrors('email')}" th:errors="*{email}">Email error</p>
+    </div>
+    <div class="form-group">
+        <label>First Name</label>
+        <input type="text" class="form-control" name="firstName">
+    </div>
+    <div class="form-group">
+        <label>Last Name</label>
+        <input type="text" class="form-control" name="lastName">
+    </div>
+    <button class="btn btn-default">Submit</button>
+</form>
+
+<!--<div id="hx-swap-div-with-th-with" th:with="sum = ${1+1}" hx:swap="${sum.equals(2)}?'afterend':null"></div>-->
+<script src="https://unpkg.com/htmx.org@1.7.0" integrity="sha384-EzBXYPt0/T6gxNp0nuPtLkmRpmDBbjg6WmCUZRLXBBwYYmwAUxzlSGej0ARHX0Bo" crossorigin="anonymous" defer></script>
+</body>
+</html>
