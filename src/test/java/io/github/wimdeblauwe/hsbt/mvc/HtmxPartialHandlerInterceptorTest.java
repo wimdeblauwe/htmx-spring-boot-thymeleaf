@@ -85,6 +85,21 @@ class HtmxPartialHandlerInterceptorTest {
                .andExpect(partialXpath("/span[@id='item'][@hx-swap-oob]").doesNotExist());
     }
 
+    @Test
+    public void testHtmxRequestExpressionUtility() throws Exception {
+        mockMvc.perform(get("/partials/expressionUtility").header("HX-Request", "true"))
+               .andExpect(status().isOk())
+               .andExpect(xpath("//div[@id='htmxRequest']").exists())
+               .andExpect(xpath("//div[@id='webRequest']").exists());
+    }
+
+    @Test
+    public void testHtmxRequestExpressionUtilityWorkEvenWhenNotHtmxRequest() throws Exception {
+        mockMvc.perform(get("/partials/expressionUtility")) //No HX-Request header
+               .andExpect(status().isOk())
+               .andExpect(xpath("//div[@id='htmxRequest']").doesNotExist());
+    }
+
 
 
 }

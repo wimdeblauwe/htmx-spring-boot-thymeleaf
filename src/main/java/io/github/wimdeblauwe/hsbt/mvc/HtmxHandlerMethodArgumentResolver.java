@@ -6,6 +6,10 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
+import javax.servlet.http.HttpServletRequest;
+
+import java.util.Objects;
+
 import static io.github.wimdeblauwe.hsbt.mvc.HtmxRequestHeader.*;
 
 public class HtmxHandlerMethodArgumentResolver implements HandlerMethodArgumentResolver {
@@ -19,32 +23,36 @@ public class HtmxHandlerMethodArgumentResolver implements HandlerMethodArgumentR
                                   ModelAndViewContainer mavContainer,
                                   NativeWebRequest webRequest,
                                   WebDataBinderFactory binderFactory) throws Exception {
-        String hxRequestHeader = webRequest.getHeader(HX_REQUEST.getValue());
+        return createHtmxRequest(Objects.requireNonNull(webRequest.getNativeRequest(HttpServletRequest.class)));
+    }
+
+    public static HtmxRequest createHtmxRequest(HttpServletRequest req) {
+        String hxRequestHeader = req.getHeader(HX_REQUEST.getValue());
         if (hxRequestHeader == null) {
             return new HtmxRequest.Builder(false).build();
         }
 
         HtmxRequest.Builder builder = new HtmxRequest.Builder(true);
-        if (webRequest.getHeader(HX_BOOSTED.getValue()) != null) {
+        if (req.getHeader(HX_BOOSTED.getValue()) != null) {
             builder.withBoosted(true);
         }
-        if (webRequest.getHeader(HX_CURRENT_URL.getValue()) != null) {
-            builder.withCurrentUrl(webRequest.getHeader(HX_CURRENT_URL.getValue()));
+        if (req.getHeader(HX_CURRENT_URL.getValue()) != null) {
+            builder.withCurrentUrl(req.getHeader(HX_CURRENT_URL.getValue()));
         }
-        if (webRequest.getHeader(HX_HISTORY_RESTORE_REQUEST.getValue()) != null) {
+        if (req.getHeader(HX_HISTORY_RESTORE_REQUEST.getValue()) != null) {
             builder.withHistoryRestoreRequest(true);
         }
-        if (webRequest.getHeader(HX_PROMPT.getValue()) != null) {
-            builder.withPromptResponse(webRequest.getHeader(HX_PROMPT.getValue()));
+        if (req.getHeader(HX_PROMPT.getValue()) != null) {
+            builder.withPromptResponse(req.getHeader(HX_PROMPT.getValue()));
         }
-        if (webRequest.getHeader(HX_TARGET.getValue()) != null) {
-            builder.withTarget(webRequest.getHeader(HX_TARGET.getValue()));
+        if (req.getHeader(HX_TARGET.getValue()) != null) {
+            builder.withTarget(req.getHeader(HX_TARGET.getValue()));
         }
-        if (webRequest.getHeader(HX_TRIGGER_NAME.getValue()) != null) {
-            builder.withTriggerName(webRequest.getHeader(HX_TRIGGER_NAME.getValue()));
+        if (req.getHeader(HX_TRIGGER_NAME.getValue()) != null) {
+            builder.withTriggerName(req.getHeader(HX_TRIGGER_NAME.getValue()));
         }
-        if (webRequest.getHeader(HX_TRIGGER.getValue()) != null) {
-            builder.withTriggerId(webRequest.getHeader(HX_TRIGGER.getValue()));
+        if (req.getHeader(HX_TRIGGER.getValue()) != null) {
+            builder.withTriggerId(req.getHeader(HX_TRIGGER.getValue()));
         }
         return builder.build();
     }

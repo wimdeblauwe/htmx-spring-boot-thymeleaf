@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>htmx request</title>
+</head>
+<body>
+<!--/*@thymesVar id="#htmxRequest" type="HtmxRequest"*/-->
+<div id="webRequest" th:if="${#request.getHeader('HX-Request')}">It is an htmx Request using the underlying request</div>
+<div id="htmxRequest" th:if="${#htmxRequest.isHtmxRequest()}">It is an htmx Request</div>
+
+</body>
+</html>

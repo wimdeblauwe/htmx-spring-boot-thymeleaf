@@ -90,4 +90,10 @@ public class PartialsController {
     }
 
 
+    @GetMapping("/partials/expressionUtility")
+    public String getWithExpressionUtility() {
+        return "htmxRequest";
+    }
+
+
 }
